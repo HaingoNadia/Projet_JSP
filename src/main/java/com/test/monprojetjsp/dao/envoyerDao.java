@@ -9,11 +9,18 @@ import com.test.monprojetjsp.dao.fraisEnvoiDao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.*;
 
 public class envoyerDao {
+
+    /** MySQL TIMESTAMP: préférer Timestamp pour éviter les dates nulles selon le driver. */
+    private static LocalDateTime readDate(ResultSet rs) throws java.sql.SQLException {
+        Timestamp ts = rs.getTimestamp("date");
+        return ts != null ? ts.toLocalDateTime() : null;
+    }
 
     // Ajouter
     public void ajouter(envoyer env) {
@@ -58,7 +65,7 @@ public class envoyerDao {
                 env.setNumEnvoyeur(rs.getString("numEnvoyeur"));
                 env.setNumRecepteur(rs.getString("numRecepteur"));
                 env.setMontant(rs.getInt("montant"));
-                env.setDate(rs.getObject("date", LocalDateTime.class));
+                env.setDate(readDate(rs));
                 env.setRaison(rs.getString("raison"));
                 list.add(env);
             }
@@ -116,7 +123,7 @@ public class envoyerDao {
                 env.setNumEnvoyeur(rs.getString("numEnvoyeur"));
                 env.setNumRecepteur(rs.getString("numRecepteur"));
                 env.setMontant(rs.getInt("montant"));
-                env.setDate(rs.getObject("date", LocalDateTime.class));
+                env.setDate(readDate(rs));
                 env.setRaison(rs.getString("raison"));
                 list.add(env);
             }
@@ -144,7 +151,7 @@ public class envoyerDao {
                 env.setNumEnvoyeur(rs.getString("numEnvoyeur"));
                 env.setNumRecepteur(rs.getString("numRecepteur"));
                 env.setMontant(rs.getInt("montant"));
-                env.setDate(rs.getObject("date", LocalDateTime.class));
+                env.setDate(readDate(rs));
                 env.setRaison(rs.getString("raison"));
             }
         }catch(Exception e){
@@ -169,7 +176,7 @@ public class envoyerDao {
             e.setNumEnvoyeur(rs.getString("numEnvoyeur"));
             e.setNumRecepteur(rs.getString("numRecepteur"));
             e.setMontant(rs.getInt("montant"));
-            e.setDate(rs.getObject("date", java.time.LocalDateTime.class));
+            e.setDate(readDate(rs));
             e.setRaison(rs.getString("raison"));
             list.add(e);
         }
@@ -179,19 +186,20 @@ public class envoyerDao {
     }
     return list;
 }
-    //relever par mois
-    public List<envoyer> getByClientAndMonth(String num, int mois){
+    /** Relevé mensuel pour le PDF (mois 1–12 + année). */
+    public List<envoyer> getByClientAndMonth(String num, int mois, int annee) {
     List<envoyer> list = new ArrayList<>();
 
     try{
         Connection con = DBConnection.getConnection();
 
         PreparedStatement ps = con.prepareStatement(
-            "SELECT * FROM envoyer WHERE numEnvoyeur=? AND MONTH(date)=?"
+            "SELECT * FROM envoyer WHERE numEnvoyeur=? AND MONTH(date)=? AND YEAR(date)=?"
         );
 
         ps.setString(1, num);
         ps.setInt(2, mois);
+        ps.setInt(3, annee);
 
         ResultSet rs = ps.executeQuery();
 
@@ -245,4 +253,4 @@ public class envoyerDao {
 
     return total;
 }
-};
+}

@@ -1,0 +1,283 @@
+/* TapTap Send — thème pro */
+:root {
+  --app-bg: #f0f4f8;
+  --app-surface: #ffffff;
+  --app-sidebar: #0f172a;
+  --app-sidebar-hover: #0d9488;
+  --app-accent: #0d9488;
+  --app-accent-dark: #0f766e;
+  --app-text: #1e293b;
+  --app-muted: #64748b;
+  --app-border: #e2e8f0;
+  --app-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+  --app-radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.app-body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--app-bg);
+  color: var(--app-text);
+  min-height: 100vh;
+}
+
+body.app-frame {
+  margin: 0;
+  padding: 0;
+  background: var(--app-bg);
+}
+
+.app-navbar {
+  background: linear-gradient(135deg, var(--app-sidebar) 0%, #1e293b 100%);
+  color: #f8fafc;
+  padding: 1rem 1.5rem;
+  box-shadow: var(--app-shadow);
+}
+
+.app-navbar .brand {
+  font-weight: 700;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.app-page-title {
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: -0.03em;
+  color: var(--app-text);
+  margin-bottom: 0.25rem;
+}
+
+.app-subtitle {
+  color: var(--app-muted);
+  font-size: 0.9rem;
+}
+
+.app-card {
+  background: var(--app-surface);
+  border-radius: var(--app-radius);
+  border: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow);
+}
+
+.app-toolbar {
+  background: var(--app-surface);
+  border-radius: var(--app-radius);
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--app-border);
+  margin-bottom: 1.25rem;
+}
+
+.table-app thead th {
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--app-muted);
+  border-bottom-width: 2px;
+}
+
+.btn-app-primary {
+  background: linear-gradient(135deg, var(--app-accent) 0%, var(--app-accent-dark) 100%);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.5rem 1.25rem;
+  border-radius: 8px;
+}
+
+.btn-app-primary:hover {
+  color: #fff;
+  filter: brightness(1.05);
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--app-text);
+}
+
+input[readonly].form-control,
+input[readonly].form-control:focus {
+  background-color: #f1f5f9;
+  cursor: not-allowed;
+}
+
+/* Sidebar (Accueil) */
+.app-sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: var(--app-sidebar);
+  color: #e2e8f0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+}
+
+.app-sidebar-header {
+  padding: 1.5rem 1.25rem;
+  font-weight: 700;
+  font-size: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.app-sidebar-logo {
+  font-size: 1.35rem;
+  color: var(--app-sidebar-hover);
+}
+
+.app-sidebar nav {
+  flex: 1;
+  padding: 0.75rem 0;
+}
+
+.app-sidebar a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  color: #cbd5e1;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+  border-left: 3px solid transparent;
+}
+
+.app-sidebar a i {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  width: 1.35rem;
+  text-align: center;
+}
+
+.app-sidebar a.app-nav-email {
+  margin-top: 0.35rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(13, 148, 136, 0.12);
+  border-left-color: rgba(13, 148, 136, 0.5);
+  color: #e2e8f0;
+}
+
+.app-sidebar a.app-nav-email:hover,
+.app-sidebar a.app-nav-email:focus {
+  background: rgba(13, 148, 136, 0.28);
+  border-left-color: var(--app-sidebar-hover);
+}
+
+.app-sidebar a:hover,
+.app-sidebar a:focus {
+  background: rgba(13, 148, 136, 0.2);
+  color: #fff;
+  border-left-color: var(--app-sidebar-hover);
+}
+
+.app-sidebar-footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.app-main {
+  margin-left: 260px;
+  min-height: 100vh;
+}
+
+.app-main iframe {
+  width: 100%;
+  height: calc(100vh - 56px);
+  border: none;
+  display: block;
+}
+
+.app-topbar {
+  min-height: 56px;
+  background: var(--app-surface);
+  border-bottom: 1px solid var(--app-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  padding: 0.65rem 1.5rem;
+  font-weight: 600;
+  color: var(--app-text);
+}
+
+.app-topbar-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.app-topbar-hint {
+  font-weight: 400;
+}
+
+.app-email-hero {
+  background: linear-gradient(135deg, var(--app-sidebar) 0%, #134e4a 50%, var(--app-accent-dark) 100%);
+  color: #f8fafc;
+  border-radius: var(--app-radius);
+  padding: 1.75rem 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--app-shadow);
+}
+
+.app-email-hero h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem 0;
+  letter-spacing: -0.02em;
+}
+
+.app-email-hero p {
+  margin: 0;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.app-quick-card {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  height: 100%;
+}
+
+.app-quick-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.12);
+  color: inherit;
+}
+
+/* Login */
+.app-login-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: linear-gradient(160deg, #0f172a 0%, #134e4a 45%, #f0f4f8 45%);
+}
+
+.app-login-card {
+  max-width: 420px;
+  width: 100%;
+  background: var(--app-surface);
+  border-radius: var(--app-radius);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: 2rem;
+  border: 1px solid var(--app-border);
+}

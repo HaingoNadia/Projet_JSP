@@ -11,8 +11,12 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 public class tauxServlet extends HttpServlet{
+    private static String generateTauxId() {
+        return "TX-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    }
     
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
@@ -28,7 +32,7 @@ public class tauxServlet extends HttpServlet{
         dao.supprimer(num);
 
         session.setAttribute("msg", "Taux d'echange suprimer avec succès");
-        res.sendRedirect("tauxServlet");
+        res.sendRedirect(req.getContextPath() + "/tauxServlet");
         return;
     }
     
@@ -70,7 +74,12 @@ public class tauxServlet extends HttpServlet{
         try {
             taux t = new taux();
 
-            t.setIdtaux(req.getParameter("idtaux"));
+            String id = req.getParameter("idtaux");
+            if ("update".equals(action)) {
+                t.setIdtaux(id);
+            } else {
+                t.setIdtaux(id != null && !id.trim().isEmpty() ? id.trim() : generateTauxId());
+            }
             String montant1Str = req.getParameter("montant1");
             if(montant1Str != null && !montant1Str.isEmpty()){
                 t.setMontant1(Integer.parseInt(montant1Str));
@@ -82,6 +91,9 @@ public class tauxServlet extends HttpServlet{
                 t.setMontant2(Integer.parseInt(montant2Str));
             } else {
                 t.setMontant2(0);
+            }
+            if (t.getMontant1() <= 0 || t.getMontant2() <= 0) {
+                throw new IllegalArgumentException("Les deux montants doivent être strictement positifs.");
             }
 
             tauxDao dao = new tauxDao();
@@ -95,11 +107,10 @@ public class tauxServlet extends HttpServlet{
             }
             
         } catch(Exception e) {
-            System.out.println("❌ Erreur dans doPost");
-            e.printStackTrace();
+            session.setAttribute("msg", "Erreur : " + e.getMessage());
         }
 
-        res.sendRedirect("tauxServlet");
+        res.sendRedirect(req.getContextPath() + "/tauxServlet");
     }
 }
 

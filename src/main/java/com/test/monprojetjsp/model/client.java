@@ -4,6 +4,8 @@
  */
 package com.test.monprojetjsp.model;
 
+import java.time.LocalDate;
+
 /**
  *
  * @author ME-PC
@@ -14,6 +16,9 @@ public class client {
     private String sexe;
     private String pays;
     private String mail;
+    private String password;
+    /** Pour afficher l'âge sur le PDF (ex. sujet TapTap Send). */
+    private LocalDate dateNaissance;
     private int solde;    
 
     public String getNumtel(){
@@ -62,5 +67,21 @@ public class client {
     
     public void setMail(String mail){
         this.mail = mail;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public LocalDate getDateNaissance() {
+        return dateNaissance;
+    }
+
+    public void setDateNaissance(LocalDate dateNaissance) {
+        this.dateNaissance = dateNaissance;
     }
 }

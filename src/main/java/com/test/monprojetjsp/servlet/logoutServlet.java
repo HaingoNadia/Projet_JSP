@@ -11,7 +11,6 @@ package com.test.monprojetjsp.servlet;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
-import java.util.List;
 
 public class logoutServlet extends HttpServlet {
 
@@ -21,6 +20,6 @@ public class logoutServlet extends HttpServlet {
         HttpSession session = req.getSession();
         session.invalidate();
 
-        res.sendRedirect("login.jsp");
+        res.sendRedirect(req.getContextPath() + "/login.jsp");
     }
 }

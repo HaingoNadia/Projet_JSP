@@ -135,7 +135,7 @@ public class fraisEnvoiDao {
                 f.setIdfrais(rs.getString("idfrais"));
                 f.setMontant1(rs.getInt("montant1"));
                 f.setMontant2(rs.getInt("montant2"));
-                f.setFrais(rs.getInt("frais"));
+                f.setFrais(rs.getFloat("frais"));
             }
         }catch(Exception e){
             e.printStackTrace();

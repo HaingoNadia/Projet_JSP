@@ -10,7 +10,7 @@
     </session-config>
     
     <welcome-file-list>
-        <welcome-file>accueil.jsp</welcome-file>
+        <welcome-file>Accueil.jsp</welcome-file>
     </welcome-file-list>
    
     <servlet>
@@ -83,5 +83,14 @@
     <servlet-mapping>
         <servlet-name>RecetteServlet</servlet-name>
         <url-pattern>/recetteServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>EmailServlet</servlet-name>
+        <servlet-class>com.test.monprojetjsp.servlet.EmailServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>EmailServlet</servlet-name>
+        <url-pattern>/emailServlet</url-pattern>
     </servlet-mapping>
 </web-app>

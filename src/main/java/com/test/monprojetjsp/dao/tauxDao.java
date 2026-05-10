@@ -14,21 +14,31 @@ import java.time.*;
 
 public class tauxDao {
     
-    public int getTaux(){
-        int taux = 1;
-        try{
+    /**
+     * Rapport de conversion montant2 / montant1 (ex. 1 EUR = 4800 MGA → 4800).
+     */
+    public double getConversionRatio() {
+        double ratio = 1.0;
+        try {
             Connection con = DBConnection.getConnection();
             ResultSet rs = con.createStatement()
-                .executeQuery("SELECT montant2 FROM taux LIMIT 1");
-
-            if(rs.next()){
-                taux = rs.getInt("montant2");
+                .executeQuery("SELECT montant1, montant2 FROM taux LIMIT 1");
+            if (rs.next()) {
+                int m1 = rs.getInt("montant1");
+                int m2 = rs.getInt("montant2");
+                if (m1 != 0) {
+                    ratio = m2 / (double) m1;
+                }
             }
-
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        return taux;
+        return ratio;
+    }
+
+    /** @deprecated préférer {@link #getConversionRatio()} */
+    public int getTaux() {
+        return (int) Math.round(getConversionRatio());
     }
 
     // ✅ Ajouter

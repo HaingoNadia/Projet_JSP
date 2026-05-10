@@ -14,6 +14,8 @@ import com.test.monprojetjsp.model.client;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class clientServlet extends HttpServlet{
@@ -31,7 +33,7 @@ public class clientServlet extends HttpServlet{
         String num = req.getParameter("numtel");
         dao.supprimer(num);
         session.setAttribute("msg", "Client supprimé");
-        res.sendRedirect("clientServlet"); 
+        res.sendRedirect(req.getContextPath() + "/clientServlet");
         return;
     }
     
@@ -44,6 +46,11 @@ public class clientServlet extends HttpServlet{
         String num = req.getParameter("numtel");
         
         client c = dao.getByNum(num);
+        if (c == null) {
+            session.setAttribute("msg", "Client introuvable ou numéro manquant.");
+            res.sendRedirect(req.getContextPath() + "/clientServlet");
+            return;
+        }
         req.setAttribute("client", c);
         
         req.getRequestDispatcher("ajouterClient.jsp").forward(req, res);
@@ -86,29 +93,54 @@ public class clientServlet extends HttpServlet{
                 c.setSolde(0);
             }
             c.setMail(req.getParameter("mail"));
-           
             clientDao dao = new clientDao();
+            String pw = req.getParameter("password");
+            if (pw != null) {
+                pw = pw.trim();
+            }
+            if ("update".equals(action) && (pw == null || pw.isEmpty())) {
+                client existing = dao.getByNum(c.getNumtel());
+                if (existing != null && existing.getPassword() != null) {
+                    c.setPassword(existing.getPassword());
+                } else {
+                    c.setPassword("");
+                }
+            } else {
+                c.setPassword(pw != null ? pw : "");
+            }
+
+            String dn = req.getParameter("dateNaissance");
+            if (dn != null && !dn.isBlank()) {
+                try {
+                    c.setDateNaissance(LocalDate.parse(dn));
+                } catch (DateTimeParseException ex) {
+                    c.setDateNaissance(null);
+                }
+            } else {
+                c.setDateNaissance(null);
+            }
+
             HttpSession session = req.getSession();
 
             if("update".equals(action)){
                 dao.modifier(c);
-                session.setAttribute("msg", "Client ajouté avec succès");
+                session.setAttribute("msg", "Client modifié avec succès");
                 
-                res.sendRedirect("clientServlet");
+                res.sendRedirect(req.getContextPath() + "/clientServlet");
                 return;
             }else{
                 dao.ajouter(c);
                 session.setAttribute("msg", "Client ajouté avec succès");
 
-                res.sendRedirect("clientServlet");                
+                res.sendRedirect(req.getContextPath() + "/clientServlet");
                 return;
             }
             
         } catch(Exception e) {
             e.printStackTrace();
-            res.sendRedirect("clientServlet?msg=error");
+            res.sendRedirect(req.getContextPath() + "/clientServlet?msg=error");
         }
 
-        res.sendRedirect("clientServlet");
+        res.sendRedirect(req.getContextPath() + "/clientServlet");
     }
 }

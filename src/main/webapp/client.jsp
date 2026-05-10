@@ -1,131 +1,106 @@
-<%-- 
-    Document   : index
-    Created on : 12 avr. 2026, 12:14:34
-    Author     : ME-PC
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.List" %>
+<%@page import="java.time.Month" %>
+<%@page import="java.time.format.TextStyle" %>
+<%@page import="java.util.Locale" %>
 <%@page import="com.test.monprojetjsp.model.client" %>
-
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <title>JSP Page</title>
-    </head>
-    <body>
-        
-        <%
-            String msg = (String) session.getAttribute("msg");
-            if(msg != null){
-        %>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clients</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/app.css">
+</head>
+<body class="app-body">
+<%
+    String msg = (String) session.getAttribute("msg");
+    if (msg != null) {
+%>
+<div class="alert alert-success alert-dismissible fade show m-3 mb-0" role="alert">
+    <%= msg %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+<% session.removeAttribute("msg"); } %>
 
-        <div id="messageBox" style="
-            position: fixed;
-            top: 600px;
-            right: 20px;
-            background-color: #28a745;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 5px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
-            z-index: 999;
-        ">
-            <%= msg %>
-        </div>
-
-        <script>
-            setTimeout(function(){
-                document.getElementById("messageBox").style.display = "none";
-            }, 3000); // disparaît après 3 secondes
-        </script>
-
-        <%
-                session.removeAttribute("msg");
-            }
-        %>
-
-        <div style="background:#2c3e50;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;">
-
-        <div>
-            <h2><i class="bi bi-people"></i> Client</h2>
-        </div>
-
-        <div>
-            <form action="<%=request.getContextPath()%>/clientServlet" method="get" style="display:inline;">
-                <input type="text" name="keyword" placeholder="Rechercher client">
-                <button type="submit">🔍</button>
-            </form>
-        </div>
-
-        <div>
-            <a href="<%=request.getContextPath()%>/clientServlet?action=add">
-                <button style="background:green;color:white;">➕ Ajouter Client</button>
-            </a>
-        </div>
-
+<div class="app-toolbar m-3 mb-0 d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <div>
+        <h1 class="app-page-title h5 mb-0">Clients</h1>
+        <p class="app-subtitle mb-0 small">Recherche par nom, e-mail, pays…</p>
     </div>
+    <form action="<%= request.getContextPath() %>/clientServlet" method="get" class="d-flex gap-2">
+        <input type="text" name="keyword" class="form-control form-control-sm" placeholder="Rechercher…" style="min-width:200px;">
+        <button type="submit" class="btn btn-sm btn-outline-secondary">Rechercher</button>
+    </form>
+    <a href="<%= request.getContextPath() %>/clientServlet?action=add" class="btn btn-sm btn-app-primary">+ Nouveau client</a>
+</div>
 
-<hr>        
-<div class="card shadow-lg p-4">       
-        <h2>Liste de client</h2>
-        <table class="table table-striped table-bordered">            
+<div class="p-3">
+    <div class="app-card overflow-hidden">
+        <div class="table-responsive">
+        <table class="table table-hover table-app mb-0 align-middle">
+            <thead class="table-light">
             <tr>
-                <th>Numtel</th>
+                <th>Téléphone</th>
                 <th>Nom</th>
                 <th>Sexe</th>
                 <th>Pays</th>
                 <th>Solde</th>
-                <th>Gmail</th>
-                <th>Action</th>
-                <th>Pdf/Mois</th>
+                <th>E-mail</th>
+                <th>Actions</th>
+                <th>Relevé PDF</th>
             </tr>
-
+            </thead>
+            <tbody>
             <%
-                List<client> liste = (List<client>)request.getAttribute("liste");
-                if(liste != null){
-                for(client c : liste){
+                List<client> liste = (List<client>) request.getAttribute("liste");
+                if (liste != null) {
+                    for (client c : liste) {
             %>
             <tr>
-                <td><%=c.getNumtel()%></td>
-                <td><%=c.getNom()%></td>
-                <td><%=c.getSexe()%></td>
-                <td><%=c.getPays()%></td>
-                <td><%=c.getSolde()%></td>
-                <td><%=c.getMail()%></td>
+                <td class="font-monospace small"><%= c.getNumtel() %></td>
+                <td><%= c.getNom() %></td>
+                <td><%= c.getSexe() %></td>
+                <td><%= c.getPays() %></td>
+                <td><%= c.getSolde() %></td>
+                <td class="small"><%= c.getMail() %></td>
                 <td>
-                    <a href="clientServlet?action=edit&numtel=<%=c.getNumtel()%>">Modifier</a>
-                    <a href="clientServlet?action=delete&numtel=<%=c.getNumtel()%>" accesskey=""onclick="return confirm('Voulez-vous vraiment supprimer ce client ?');"> Supprimer</a>                
+                    <a class="btn btn-link btn-sm p-0 me-2" href="<%= request.getContextPath() %>/clientServlet?action=edit&numtel=<%= c.getNumtel() %>">Modifier</a>
+                    <a class="btn btn-link btn-sm p-0 text-danger" href="<%= request.getContextPath() %>/clientServlet?action=delete&numtel=<%= c.getNumtel() %>"
+                       onclick="return confirm('Supprimer ce client ?');">Supprimer</a>
                 </td>
                 <td>
-                      <form action="pdf" method="get">
-                    <input type="hidden" name="numtel" value="<%=c.getNumtel()%>" >
-                    <select name="mois">
-                        <option value="1">Janvier</option>
-                        <option value="2">Février</option>
-                        <option value="3">Mars</option>
-                        <option value="4">Avril</option>
-                        <option value="5">Mai</option>
-                        <option value="6">Juin</option>
-                        <option value="7">Juillet</option>
-                        <option value="8">Août</option>
-                        <option value="9">Septembre</option>
-                        <option value="10">Octobre</option>
-                        <option value="11">Novembre</option>
-                        <option value="12">Décembre</option>
-                    </select>
-                        <button type="submit">Télécharger PDF</button>
+                    <form action="<%= request.getContextPath() %>/pdf" method="get" class="d-flex flex-wrap gap-1 align-items-center">
+                        <input type="hidden" name="numtel" value="<%= c.getNumtel() %>">
+                        <select name="mois" class="form-select form-select-sm" style="width:auto;min-width:5.5rem;">
+                            <%
+                                int mCur = java.time.LocalDate.now().getMonthValue();
+                                for (int m = 1; m <= 12; m++) {
+                                    String mLabel = Month.of(m).getDisplayName(TextStyle.FULL_STANDALONE, Locale.FRENCH);
+                                    mLabel = mLabel.substring(0, 1).toUpperCase(Locale.FRENCH) + mLabel.substring(1);
+                            %>
+                            <option value="<%= m %>" <%= m == mCur ? "selected" : "" %>><%= mLabel %></option>
+                            <% } %>
+                        </select>
+                        <select name="annee" class="form-select form-select-sm" style="width:auto;min-width:4.5rem;">
+                            <%
+                                int yCur = java.time.Year.now().getValue();
+                                for (int y = yCur - 2; y <= yCur + 1; y++) {
+                            %>
+                            <option value="<%= y %>" <%= y == yCur ? "selected" : "" %>><%= y %></option>
+                            <% } %>
+                        </select>
+                        <button type="submit" class="btn btn-sm btn-outline-primary">PDF</button>
                     </form>
                 </td>
             </tr>
-
-            <%
-                    }
-                }
-            %>
+            <% } } %>
+            </tbody>
         </table>
-    </div>    
-    </body>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

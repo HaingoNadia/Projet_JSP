@@ -5,10 +5,8 @@
 package com.test.monprojetjsp.servlet;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,7 +16,6 @@ import com.test.monprojetjsp.model.fraisEnvoi;
 
 import java.util.List;
 
-@WebServlet("/RecetteServlet")
 public class RecetteServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res)

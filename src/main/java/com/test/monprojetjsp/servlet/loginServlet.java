@@ -30,7 +30,7 @@ public class loginServlet extends HttpServlet {
             HttpSession session = req.getSession();
             session.setAttribute("user", c);
 
-            res.sendRedirect("accueil.jsp"); // page principale
+            res.sendRedirect(req.getContextPath() + "/Accueil.jsp");
         }else{
             req.setAttribute("error", "Email ou mot de passe incorrect");
             req.getRequestDispatcher("login.jsp").forward(req, res);

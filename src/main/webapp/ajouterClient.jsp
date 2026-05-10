@@ -13,25 +13,25 @@
     <meta charset="UTF-8">
     <title>Ajouter Client</title>
 
-    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="<%=request.getContextPath()%>/css/app.css">
 </head>
 
-<body class="bg-light">
+<body class="app-body">
 
-<div class="container mt-5">
+<div class="container py-4">
 
-    <div class="card shadow">
+    <div class="app-card shadow-sm">
         
         <%
             client cl = (client)request.getAttribute("client");
         %>
 
-        <div class="card-header bg-primary text-white text-center">
-            <h4><%= (cl != null) ? "Modifier Client" : "Ajouter Client" %></h4>
+        <div class="card-header text-white text-center py-3" style="background: linear-gradient(135deg, #0d9488, #0f766e); border: none;">
+            <h4 class="mb-0"><%= (cl != null) ? "Modifier le client" : "Nouveau client" %></h4>
         </div>
 
-        <div class="card-body"> 
+        <div class="card-body p-4"> 
             <!-- MESSAGE -->
             <%
                 String msg = (String) session.getAttribute("msg");
@@ -51,15 +51,21 @@
                 <input type="hidden" name="action" value="<%= (cl != null) ? "update" : "insert" %>">
 
                 <div class="mb-3">
-                    <label class="form-label">Numéro</label>
-                    <input type="text" name="numtel" class="form-control"
-                           value="<%= (cl != null) ? cl.getNumtel() : "" %>" required>
+                    <label class="form-label">Numéro de téléphone (clé)</label>
+                    <input type="tel" name="numtel" class="form-control"
+                           value="<%= (cl != null) ? cl.getNumtel() : "" %>"
+                           <%= (cl != null) ? "readonly" : "" %> required
+                           autocomplete="tel"
+                           placeholder="+261341234567">
+                    <% if (cl != null) { %><div class="form-text">Identifiant non modifiable.</div><% } else { %><div class="form-text">Exemple: +261341234567</div><% } %>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Nom</label>
                     <input type="text" name="nom" class="form-control"
-                           value="<%= (cl != null) ? cl.getNom() : "" %>" required>
+                           value="<%= (cl != null) ? cl.getNom() : "" %>" required
+                           autocomplete="name"
+                           placeholder="Nom complet du client">
                 </div>
 
                 <div class="mb-3">
@@ -73,24 +79,56 @@
                 <div class="mb-3">
                     <label class="form-label">Pays</label>
                     <input type="text" name="pays" class="form-control"
-                           value="<%= (cl != null) ? cl.getPays() : "" %>" required>
+                           value="<%= (cl != null) ? cl.getPays() : "" %>" required
+                           list="paysList"
+                           placeholder="Madagascar, France, ...">
+                    <datalist id="paysList">
+                        <option value="Madagascar"></option>
+                        <option value="France"></option>
+                        <option value="Comores"></option>
+                        <option value="Maurice"></option>
+                        <option value="Canada"></option>
+                    </datalist>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Solde</label>
                     <input type="number" name="solde" class="form-control"
-                           value="<%= (cl != null) ? cl.getSolde() : "" %>">
+                           value="<%= (cl != null) ? cl.getSolde() : "" %>"
+                           min="0" step="1" placeholder="0">
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Email</label>
                     <input type="email" name="mail" class="form-control"
-                           value="<%= (cl != null) ? cl.getMail() : "" %>" required>
+                           value="<%= (cl != null) ? cl.getMail() : "" %>" required
+                           autocomplete="email"
+                           placeholder="client@exemple.com">
                 </div>
 
-                <div class="d-flex justify-content-between">
-                    <a href="clientServlet" class="btn btn-secondary">Retour</a>
-                    <button type="submit" class="btn btn-success">
+                <div class="mb-3">
+                    <label class="form-label">Mot de passe (connexion)</label>
+                    <input type="password" name="password" class="form-control" autocomplete="new-password"
+                           <%= (cl != null) ? "" : "required" %>
+                           placeholder="<%= (cl != null) ? "Laissez vide pour conserver le mot de passe actuel" : "" %>">
+                    <% if (cl != null) { %>
+                    <div class="form-text">Les autres champs sont préremplis depuis la base. Saisissez un nouveau mot de passe uniquement si vous souhaitez le modifier.</div>
+                    <% } %>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Date de naissance (pour l'âge sur le relevé PDF)</label>
+                    <input type="date" name="dateNaissance" class="form-control"
+                           value="<%
+                               if (cl != null && cl.getDateNaissance() != null) {
+                                   out.print(cl.getDateNaissance().toString());
+                               }
+                           %>">
+                </div>
+
+                <div class="d-flex justify-content-between pt-2">
+                    <a href="<%=request.getContextPath()%>/clientServlet" class="btn btn-outline-secondary">Retour</a>
+                    <button type="submit" class="btn btn-app-primary">
                         <%= (cl != null) ? "Modifier" : "Ajouter" %>
                     </button>
                 </div>

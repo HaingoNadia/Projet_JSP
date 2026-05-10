@@ -15,8 +15,12 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 public class fraisEnvoiServlet extends HttpServlet{
+    private static String generateFraisId() {
+        return "FR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    }
     
     protected void doGet(HttpServletRequest req, HttpServletResponse res)
     throws ServletException, IOException {
@@ -31,7 +35,7 @@ public class fraisEnvoiServlet extends HttpServlet{
         String id = req.getParameter("idfrais");
         dao.supprimer(id);
         session.setAttribute("msg", "Frais suprimer avec succès");
-        res.sendRedirect("fraisEnvoiServlet");
+        res.sendRedirect(req.getContextPath() + "/fraisEnvoiServlet");
         return;
     }
     
@@ -74,7 +78,12 @@ public class fraisEnvoiServlet extends HttpServlet{
         try {
             fraisEnvoi f = new fraisEnvoi();
 
-            f.setIdfrais(req.getParameter("idfrais"));
+            String id = req.getParameter("idfrais");
+            if ("update".equals(action)) {
+                f.setIdfrais(id);
+            } else {
+                f.setIdfrais(id != null && !id.trim().isEmpty() ? id.trim() : generateFraisId());
+            }
 
         // 🔥 IMPORTANT : sécuriser solde
             String montant1Str = req.getParameter("montant1");
@@ -97,6 +106,12 @@ public class fraisEnvoiServlet extends HttpServlet{
             } else {
                 f.setFrais(0);
             }
+            if (f.getMontant1() < 0 || f.getMontant2() <= 0 || f.getFrais() < 0) {
+                throw new IllegalArgumentException("Montants/Frais invalides.");
+            }
+            if (f.getMontant1() > f.getMontant2()) {
+                throw new IllegalArgumentException("Le montant minimum doit être <= au montant maximum.");
+            }
 
             fraisEnvoiDao dao = new fraisEnvoiDao();
             
@@ -109,10 +124,9 @@ public class fraisEnvoiServlet extends HttpServlet{
             }
             
         } catch(Exception e) {
-            System.out.println("❌ Erreur dans doPost");
-            e.printStackTrace();
+            session.setAttribute("msg", "Erreur : " + e.getMessage());
         }
 
-        res.sendRedirect("fraisEnvoiServlet");
+        res.sendRedirect(req.getContextPath() + "/fraisEnvoiServlet");
     }
 }
