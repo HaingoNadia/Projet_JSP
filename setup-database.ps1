@@ -7,11 +7,18 @@ if (-not (Test-Path $sql)) {
     exit 1
 }
 
-$mysqlCmd = (Get-Command mysql -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source -ErrorAction SilentlyContinue)
+$mysqlCmd = $null
+if ($env:MYSQL_CMD -and (Test-Path $env:MYSQL_CMD)) {
+    $mysqlCmd = $env:MYSQL_CMD
+}
+if (-not $mysqlCmd) {
+    $mysqlCmd = (Get-Command mysql -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source -ErrorAction SilentlyContinue)
+}
 if (-not $mysqlCmd) {
     $candidates = @(
         "C:\wamp64\bin\mysql\mysql8.0.31\bin\mysql.exe",
         "C:\wamp64\bin\mysql\mysql8.0.34\bin\mysql.exe",
+        "C:\wamp64\bin\mysql\mysql8.0.21\bin\mysql.exe",
         "C:\wamp64\bin\mysql\mysql8.1.0\bin\mysql.exe",
         "C:\wamp64\bin\mysql\mysql8.2.0\bin\mysql.exe",
         "C:\xampp\mysql\bin\mysql.exe"
@@ -23,9 +30,6 @@ if (-not $mysqlCmd) {
     Write-Host "Set a custom path and rerun, e.g.:"
     Write-Host "  `$env:MYSQL_CMD='C:\wamp64\bin\mysql\mysql8.0.31\bin\mysql.exe'"
     exit 1
-}
-if ($env:MYSQL_CMD -and (Test-Path $env:MYSQL_CMD)) {
-    $mysqlCmd = $env:MYSQL_CMD
 }
 Write-Host "Using mysql client: $mysqlCmd"
 
