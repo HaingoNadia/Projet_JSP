@@ -4,7 +4,7 @@ This project is ready to run with simple scripts on both Linux and Windows.
 
 ## Prerequisites
 
-- Java 11
+- Java 11+ (Java 17 works)
 - Maven 3.8+
 - MySQL Server + MySQL client (`mysql` command)
 
@@ -67,6 +67,23 @@ setup-database.bat
 ### Windows (PowerShell)
 
 ```powershell
+.\setup-database.ps1
+```
+
+### Windows WAMP/XAMPP note
+
+- The Windows setup scripts now auto-detect `mysql.exe` in common WAMP/XAMPP locations.
+- If your version path is different, set it manually:
+
+CMD:
+```bat
+set MYSQL_CMD=C:\wamp64\bin\mysql\mysql8.0.xx\bin\mysql.exe
+setup-database.bat
+```
+
+PowerShell:
+```powershell
+$env:MYSQL_CMD="C:\wamp64\bin\mysql\mysql8.0.xx\bin\mysql.exe"
 .\setup-database.ps1
 ```
 
