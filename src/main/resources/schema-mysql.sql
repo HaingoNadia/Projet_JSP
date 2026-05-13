@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS taux (
     montant1 INT NOT NULL,
     montant2 INT NOT NULL
 );
+ALTER TABLE taux MODIFY COLUMN idtaux VARCHAR(64) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS frais_envoi (
     idfrais  VARCHAR(64) PRIMARY KEY,
@@ -25,6 +26,7 @@ CREATE TABLE IF NOT EXISTS frais_envoi (
     montant2 INT NOT NULL,
     frais    INT NOT NULL
 );
+ALTER TABLE frais_envoi MODIFY COLUMN idfrais VARCHAR(64) NOT NULL;
 
 CREATE TABLE IF NOT EXISTS envoyer (
     idEnv        VARCHAR(64) PRIMARY KEY,
@@ -34,3 +36,4 @@ CREATE TABLE IF NOT EXISTS envoyer (
     date         DATETIME NOT NULL,
     raison       VARCHAR(512)
 );
+ALTER TABLE envoyer MODIFY COLUMN idEnv VARCHAR(64) NOT NULL;
