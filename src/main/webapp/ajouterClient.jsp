@@ -94,8 +94,8 @@
                 <div class="mb-3">
                     <label class="form-label">Solde</label>
                     <input type="number" name="solde" class="form-control"
-                           value="<%= (cl != null) ? cl.getSolde() : "" %>"
-                           min="0" step="1" placeholder="0">
+                           value="<%= (cl != null) ? String.format(java.util.Locale.US, "%.2f", cl.getSolde()) : "" %>"
+                           min="0" step="0.01" placeholder="0">
                 </div>
 
                 <div class="mb-3">

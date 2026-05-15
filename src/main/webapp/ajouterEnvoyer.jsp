@@ -52,8 +52,8 @@
                                 for (client c : clients) {
                                     String selected = (cl != null && c.getNumtel() != null && c.getNumtel().equals(cl.getNumEnvoyeur())) ? "selected" : "";
                         %>
-                            <option value="<%= c.getNumtel() %>" <%= selected %> data-solde="<%= c.getSolde() %>">
-                                <%= c.getNom() %> - <%= c.getNumtel() %> (<%= c.getPays() %>, solde: <%= c.getSolde() %>)
+                            <option value="<%= c.getNumtel() %>" <%= selected %> data-solde="<%= String.format(java.util.Locale.US, "%.2f", c.getSolde()) %>">
+                                <%= c.getNom() %> - <%= c.getNumtel() %> (<%= c.getPays() %>, solde: <%= new java.text.DecimalFormat("0.##").format(c.getSolde()) %>)
                             </option>
                         <%
                                 }

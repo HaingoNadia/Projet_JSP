@@ -35,7 +35,7 @@ public class clientDao {
             ps.setString(2, c.getNom());
             ps.setString(3, c.getSexe());
             ps.setString(4, c.getPays());
-            ps.setInt(5, c.getSolde());
+            ps.setDouble(5, c.getSolde());
             ps.setString(6, c.getMail());
             ps.setString(7, c.getPassword());
             setDateNaissance(ps, 8, c.getDateNaissance());
@@ -81,7 +81,7 @@ public class clientDao {
             ps.setString(1, c.getNom());
             ps.setString(2, c.getSexe());
             ps.setString(3, c.getPays());
-            ps.setInt(4, c.getSolde());
+            ps.setDouble(4, c.getSolde());
             ps.setString(5, c.getMail());
             ps.setString(6, c.getPassword());
             setDateNaissance(ps, 7, c.getDateNaissance());
@@ -157,7 +157,7 @@ public class clientDao {
         c.setNom(rs.getString("nom"));
         c.setSexe(rs.getString("sexe"));
         c.setPays(rs.getString("pays"));
-        c.setSolde(rs.getInt("solde"));
+        c.setSolde(rs.getDouble("solde"));
         c.setMail(rs.getString("mail"));
         c.setPassword(rs.getString("password"));
         c.setDateNaissance(readDateNaissance(rs));

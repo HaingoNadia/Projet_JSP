@@ -38,16 +38,21 @@ public class envoyerServlet extends HttpServlet {
         return String.format(Locale.FRANCE, "%.2f", valeur);
     }
 
+    /** Arrondit un montant à 2 décimales (centimes) en évitant la dérive des doubles. */
+    private static double round2(double valeur) {
+        return Math.round(valeur * 100.0) / 100.0;
+    }
+
     private static String generateTransferId() {
         return "TR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase(Locale.ROOT);
     }
 
-    private static int maxTransferableForBalance(int solde, fraisEnvoiDao fdao) {
+    private static int maxTransferableForBalance(double solde, fraisEnvoiDao fdao) {
         if (solde <= 0) {
             return 0;
         }
         int low = 0;
-        int high = solde;
+        int high = (int) Math.floor(solde);
         int best = 0;
 
         while (low <= high) {
@@ -204,7 +209,7 @@ public class envoyerServlet extends HttpServlet {
                 } else {
                     montantConverti = montant * ratio;
                 }
-                int montantCredite = (int) Math.round(montantConverti);
+                double montantCredite = round2(montantConverti);
 
                 double totalDebit = montant + frais;
                 int montantMax = maxTransferableForBalance(envoyeur.getSolde(), fdao);
@@ -216,8 +221,8 @@ public class envoyerServlet extends HttpServlet {
                     throw new IllegalArgumentException("Solde insuffisant (montant + frais).");
                 }
 
-                envoyeur.setSolde((int) Math.round(envoyeur.getSolde() - totalDebit));
-                recepteur.setSolde(recepteur.getSolde() + montantCredite);
+                envoyeur.setSolde(round2(envoyeur.getSolde() - totalDebit));
+                recepteur.setSolde(round2(recepteur.getSolde() + montantCredite));
 
                 cdao.modifier(envoyeur);
                 cdao.modifier(recepteur);

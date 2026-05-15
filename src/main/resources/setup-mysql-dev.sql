@@ -14,11 +14,13 @@ CREATE TABLE IF NOT EXISTS client (
     nom            VARCHAR(255) NOT NULL,
     sexe           VARCHAR(32),
     pays           VARCHAR(128),
-    solde          INT          NOT NULL DEFAULT 0,
+    solde          DECIMAL(15,2) NOT NULL DEFAULT 0,
     mail           VARCHAR(255) NOT NULL,
     password       VARCHAR(255),
     date_naissance DATE         NULL
 );
+-- Bases existantes : conserve les centimes du solde (ex. 1.04 €).
+ALTER TABLE client MODIFY COLUMN solde DECIMAL(15,2) NOT NULL DEFAULT 0;
 
 -- Si la table client existait déjà sans date_naissance, ajoute la colonne.
 SET @exists := (

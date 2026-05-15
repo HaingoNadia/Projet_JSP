@@ -88,7 +88,7 @@ public class clientServlet extends HttpServlet{
         // 🔥 IMPORTANT : sécuriser solde
             String soldeStr = req.getParameter("solde");
             if(soldeStr != null && !soldeStr.isEmpty()){
-                c.setSolde(Integer.parseInt(soldeStr));
+                c.setSolde(Double.parseDouble(soldeStr.replace(',', '.')));
             } else {
                 c.setSolde(0);
             }

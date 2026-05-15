@@ -63,7 +63,7 @@
                 <td><%= c.getNom() %></td>
                 <td><%= c.getSexe() %></td>
                 <td><%= c.getPays() %></td>
-                <td><%= c.getSolde() %></td>
+                <td><%= new java.text.DecimalFormat("0.##").format(c.getSolde()) %></td>
                 <td class="small"><%= c.getMail() %></td>
                 <td>
                     <a class="btn btn-link btn-sm p-0 me-2" href="<%= request.getContextPath() %>/clientServlet?action=edit&numtel=<%= c.getNumtel() %>">Modifier</a>

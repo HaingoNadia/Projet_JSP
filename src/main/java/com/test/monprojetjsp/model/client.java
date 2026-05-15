@@ -19,7 +19,7 @@ public class client {
     private String password;
     /** Pour afficher l'âge sur le PDF (ex. sujet TapTap Send). */
     private LocalDate dateNaissance;
-    private int solde;    
+    private double solde;
 
     public String getNumtel(){
         return numtel;
@@ -53,11 +53,11 @@ public class client {
         this.pays = pays;
     }
     
-        public int getSolde(){
+        public double getSolde(){
         return solde;
     }
-    
-    public void setSolde(int solde){
+
+    public void setSolde(double solde){
         this.solde = solde;
     }
     
