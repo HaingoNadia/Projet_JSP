@@ -25,6 +25,19 @@ public class envoyerServlet extends HttpServlet {
         return pays != null && pays.toLowerCase(Locale.FRENCH).contains("madagascar");
     }
 
+    /** Devise d'un pays : Madagascar = Ariary, sinon Euro. */
+    private static String devise(String pays) {
+        return paysMadagascar(pays) ? "Ariary" : "Euro";
+    }
+
+    /** Affiche un montant sans décimale s'il est entier, sinon avec 2 décimales (ex. 0,04). */
+    private static String formatMontant(double valeur) {
+        if (valeur == Math.rint(valeur) && !Double.isInfinite(valeur)) {
+            return String.valueOf((long) valeur);
+        }
+        return String.format(Locale.FRANCE, "%.2f", valeur);
+    }
+
     private static String generateTransferId() {
         return "TR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase(Locale.ROOT);
     }
@@ -184,14 +197,14 @@ public class envoyerServlet extends HttpServlet {
                 float frais = fdao.getFrais(montant);
                 double ratio = tdao.getConversionRatio();
 
-                int montantFinal;
+                // Montant converti exact : peut être inférieur à 1 (ex. 200 Ar ≈ 0,04 €).
+                double montantConverti;
                 if (paysMadagascar(envoyeur.getPays()) && !paysMadagascar(recepteur.getPays())) {
-                    montantFinal = (int) Math.round(montant / ratio);
-                } else if (!paysMadagascar(envoyeur.getPays()) && paysMadagascar(recepteur.getPays())) {
-                    montantFinal = (int) Math.round(montant * ratio);
+                    montantConverti = montant / ratio;
                 } else {
-                    montantFinal = (int) Math.round(montant * ratio);
+                    montantConverti = montant * ratio;
                 }
+                int montantCredite = (int) Math.round(montantConverti);
 
                 double totalDebit = montant + frais;
                 int montantMax = maxTransferableForBalance(envoyeur.getSolde(), fdao);
@@ -204,7 +217,7 @@ public class envoyerServlet extends HttpServlet {
                 }
 
                 envoyeur.setSolde((int) Math.round(envoyeur.getSolde() - totalDebit));
-                recepteur.setSolde(recepteur.getSolde() + montantFinal);
+                recepteur.setSolde(recepteur.getSolde() + montantCredite);
 
                 cdao.modifier(envoyeur);
                 cdao.modifier(recepteur);
@@ -212,16 +225,23 @@ public class envoyerServlet extends HttpServlet {
 
                 session.setAttribute("msg", "Transfert international enregistré avec succès.");
 
+                String deviseEnvoyeur = devise(envoyeur.getPays());
+                String deviseRecepteur = devise(recepteur.getPays());
+
                 String messageEnvoyeur = "Bonjour " + envoyeur.getNom() + ",\n\n"
-                        + "Vous avez envoyé " + montant + " (frais : " + frais + ").\n"
-                        + "Nouveau solde : " + envoyeur.getSolde() + ".\n"
+                        + "Vous avez envoyé " + formatMontant(montant) + " " + deviseEnvoyeur
+                        + " (frais : " + formatMontant(frais) + " " + deviseEnvoyeur + ").\n"
+                        + "Montant reçu par le destinataire : "
+                        + formatMontant(montantConverti) + " " + deviseRecepteur + ".\n"
+                        + "Nouveau solde : " + formatMontant(envoyeur.getSolde()) + " " + deviseEnvoyeur + ".\n"
                         + "Merci d'utiliser notre service.";
 
                 EmailUtil.envoyerEmail(envoyeur.getMail(), "Confirmation d'envoi d'argent", messageEnvoyeur);
 
                 String messageRecepteur = "Bonjour " + recepteur.getNom() + ",\n\n"
-                        + "Vous avez reçu " + montantFinal + " de la part de " + envoyeur.getNom() + ".\n"
-                        + "Nouveau solde : " + recepteur.getSolde() + ".";
+                        + "Vous avez reçu " + formatMontant(montantConverti) + " " + deviseRecepteur
+                        + " de la part de " + envoyeur.getNom() + ".\n"
+                        + "Nouveau solde : " + formatMontant(recepteur.getSolde()) + " " + deviseRecepteur + ".";
 
                 EmailUtil.envoyerEmail(recepteur.getMail(), "Réception d'argent", messageRecepteur);
             }
